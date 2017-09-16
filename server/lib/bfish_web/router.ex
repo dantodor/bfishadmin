@@ -5,6 +5,7 @@ defmodule BfishWeb.Router do
   pipeline :api do
     plug CORSPlug, origin: ["*"]
     plug :accepts, ["json"]
+    plug BfishWeb.Context
   end
 
   scope "/" do
@@ -14,8 +15,7 @@ defmodule BfishWeb.Router do
       schema: BfishWeb.Schema
 
     forward "/graphiql", Absinthe.Plug.GraphiQL,
-      schema: BfishWeb.Schema,
-      interface: :simple
+      schema: BfishWeb.Schema
   end
 
 end

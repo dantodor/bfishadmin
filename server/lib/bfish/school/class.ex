@@ -10,14 +10,14 @@ defmodule Bfish.School.Class do
     belongs_to :user, Bfish.School.User
 
     has_many :student , Bfish.School.Student
-    
+
     timestamps()
   end
 
   @doc false
   def changeset(%Class{} = class, attrs) do
     class
-    |> cast(attrs, [:class_name])
+    |> cast(attrs, [:class_name,:user_id])
     |> validate_required([:class_name])
     |> foreign_key_constraint(:user)
   end

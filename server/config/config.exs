@@ -1,6 +1,10 @@
 use Mix.Config
 
 # General application configuration
+
+config :comeonin, Ecto.Password, Comeonin.Pbkdf2
+
+
 config :bfish,
   ecto_repos: [Bfish.Repo]
 

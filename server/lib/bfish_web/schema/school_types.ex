@@ -3,6 +3,18 @@ defmodule BfishWeb.Schema.SchoolTypes do
 
   alias BfishWeb.Resolvers
 
+  object :user_session do
+    field :token, :string
+    field :user, :user
+  end
+
+
+  object :classlist do
+    field :classes, list_of(:class) do
+      resolve &Resolvers.School.list_filtered_classes/3
+    end
+  end
+
   object :user do
     args :nm, :string
     field :email, :string
@@ -32,5 +44,27 @@ defmodule BfishWeb.Schema.SchoolTypes do
       field :week_hours, :integer
   end
 
+
+
+#  object :user_red do
+#    field :name, :string
+#    field :email, :string
+#    field :id, :string
+#  end
+
+
+  input_object :class_input do
+    field :class_name, non_null(:string)
+    field :user_id, non_null(:integer)
+  end
+
+
+  input_object :student_input do
+    field :fname, non_null(:string)
+    field :lname, non_null(:string)
+    field :login_name, non_null(:string)
+    field :password, non_null(:string)
+    field :class_id, non_null(:integer)
+  end
 
 end

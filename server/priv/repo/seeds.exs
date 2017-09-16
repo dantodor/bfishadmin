@@ -10,11 +10,11 @@
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
 
-alias Bfish.{Accounts, School, Repo}
+alias Bfish.{School, Repo}
 
 
 
-ravi = %Accounts.User{name: "Ravi",userid: "ravi",
+ravi = %School.User{name: "Ravi",userid: "ravi",
          email: "ravi@brightfishlearning.com", password: "ravi", role: "admin"} |> Repo.insert!
 
 class1 =

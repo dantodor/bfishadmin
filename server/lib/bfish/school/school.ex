@@ -110,18 +110,12 @@ defmodule Bfish.School do
     Ecto.assoc(class, :student) |> Repo.all
   end
 
-  #  def list_hotels_for_city(city, %{hf: nam}) when is_binary(nam) do
-#    Ecto.assoc(city, :hotel) |> where([h],ilike(h.name, ^"%#{nam}%" )) |> Repo.all
-#  end
-#
-#  def list_hotels_for_city(city, _) do
-#    Ecto.assoc(city, :hotel) |> Repo.all
-#  end
-#
-#  def list_hotels(%{hf: name}) when is_binary(name) do
-#    Hotel
-#    |> where([m], ilike(m.name, ^"%#{name}%"))
-#    |> Repo.all
-#  end
+  def lookup(id) do
+    IO.inspect(id)
+    {:ok,Repo.get_by(User, id: id)}
+  end
+
+
+
 
 end
