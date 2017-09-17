@@ -7,14 +7,17 @@
 			</div>
 	  	<div class="mdl-card__supporting-text">
 				<form action="#">
+					<div style = "background-color:#ddd; width: 100%; margin: 0 auto;"> Username :</div>
 					<div class="mdl-textfield mdl-js-textfield">
 						<input class="mdl-textfield__input" type="text" id="username" v-model="username"/>
-						<label class="mdl-textfield__label" for="username">Username</label>
+						
 					</div>
+					<div style = "background-color:#ddd; width: 100%; margin: 0 auto;"> Password :</div>
 					<div class="mdl-textfield mdl-js-textfield">
 						<input class="mdl-textfield__input" type="password" id="userpass" v-model="password"/>
-						<label class="mdl-textfield__label" for="userpass">Password</label>
+						
 					</div>
+					<div v-if="isError">{{errorMessage}}</div>
 				</form>
 			</div>
 			<div class="mdl-card__actions mdl-card--border">
@@ -26,18 +29,53 @@
 </template>
 
 <script>
+
+import gql from 'graphql-tag';
+
+
 export default {
     data () {
         return {
-
             username: '',
-            password: ''
+			password: '',
+			isError: false,
+			errorMessage: 'Incorrect username or password, try again'
         }
-    }, 
+	},
+	apollo: {
+    	$client: 'a',
+    	$loadingKey: 'loading',
+  	},
     methods: {
         logClicked() {
             console.log(this.username)
-            console.log(this.password)
+			console.log(this.password)
+			this.$apollo.mutate({
+				// Query
+				mutation: gql`mutation ($email: String!, $password: String!) {
+					loginUser(email: $email, password: $password) {
+							token
+						}
+					}`,
+				// Parameters
+				variables: {
+				email: this.username,
+				password: this.password
+				}
+			}).then((data) => {
+				// Result
+				console.log(data.data.loginUser.token);
+				localStorage.setItem("token",data.data.loginUser.token)
+				this.$router.push({name: 'home' })
+			}).catch((error) => {
+				// Error
+				this.username=''
+				this.password=''
+				this.isError = true
+				//alert('Incorrect username or password, try again')
+				console.error(error);
+		});
+		
         }
     } 
 }

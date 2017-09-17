@@ -5,14 +5,13 @@ defmodule BfishWeb.Resolvers.School do
   alias Comeonin.Ecto.Password
   alias Bfish.School
   alias Bfish.School.User
+  alias Bfish.School.Student
 
   def list_classes(user, _, _) do
     {:ok, School.list_classes_for_user(user)}
   end
 
   def list_filtered_classes(_, _, %{context: context}) do
-    IO.puts("here")
-    IO.inspect(context)
     case context do
       %{current_user: %{id: uid}} ->
         classes_for_user(uid)
@@ -23,9 +22,6 @@ defmodule BfishWeb.Resolvers.School do
 
 
   def classes_for_user(uud) do
-    IO.inspect(uud)
-    c_usr = School.lookup(uud)
-    IO.inspect(c_usr)
      case School.lookup(uud) do
       {:ok, us_r} -> {:ok, School.list_classes_for_user(us_r)}
       _ -> {:error, "unauthorized"}
@@ -40,20 +36,38 @@ defmodule BfishWeb.Resolvers.School do
     {:ok,School.list_users(args)}
   end
 
-  def create_class(_, %{input: params}, _) do
-    case School.create_class(params) do
-      {:error, _} ->
-         {:error, "Could not create class"}
-      {:ok, _} = success ->
-      success
+  def create_class(_, %{input: params}, %{context: context}) do
+    case context do
+      %{current_user: %{id: uid}} ->
+        case School.create_class(Map.put(params,:user_id,uid)) do
+          {:error, _} ->
+            {:error, "Could not create class"}
+          {:ok, _} = success ->
+            success
+        end
+      _ ->
+        {:error, "unauthorized"}
     end
+
   end
 
 
   def create_student(_, %{input: params}, _) do
-    case School.create_student(params) do
+    mod_params = Map.put(params,:class_id,params[:clss_id])
+    case School.create_student(mod_params) do
       {:error, _} ->
         {:error, "Could not create student"}
+      {:ok, _} = success ->
+        success
+    end
+  end
+
+  def update_student(_, %{input: params}, _) do
+    student = Repo.get!(Student,params[:id])
+    mod_params = Map.delete(params,:id)
+    case School.update_student(student, mod_params) do
+      {:error, _} ->
+        {:error, "Could not update student"}
       {:ok, _} = success ->
         success
     end

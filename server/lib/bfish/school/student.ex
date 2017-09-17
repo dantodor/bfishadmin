@@ -21,8 +21,10 @@ defmodule Bfish.School.Student do
 
   @doc false
   def changeset(%Student{} = students, attrs) do
+    IO.puts("---")
+    IO.inspect(attrs)
     students
-    |> cast(attrs, [:login_name, :password, :fname, :lname, :stories, :total_hours, :week_hours, :average,:class_id])
+    |> cast(attrs, [:login_name, :password, :fname, :lname, :stories, :total_hours, :week_hours, :average, :class_id])
     |> validate_required([:login_name, :password, :fname, :lname, :class_id])
     |> foreign_key_constraint(:class)
   end

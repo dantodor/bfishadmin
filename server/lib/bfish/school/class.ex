@@ -5,7 +5,7 @@ defmodule Bfish.School.Class do
 
 
   schema "classes" do
-    field :class_name, :string
+    field :clss_name, :string
 
     belongs_to :user, Bfish.School.User
 
@@ -17,8 +17,8 @@ defmodule Bfish.School.Class do
   @doc false
   def changeset(%Class{} = class, attrs) do
     class
-    |> cast(attrs, [:class_name,:user_id])
-    |> validate_required([:class_name])
+    |> cast(attrs, [:clss_name,:user_id])
+    |> validate_required([:clss_name])
     |> foreign_key_constraint(:user)
   end
 end

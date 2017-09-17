@@ -3,7 +3,7 @@
     <div class="mdl-grid">
       <div class="mdl-cell mdl-cell--3-col mdl-cell mdl-cell--1-col-tablet mdl-cell--hide-phone"></div>
       <div class="mdl-cell mdl-cell--6-col mdl-cell--4-col-phone">
-       <div v-for="cl in this.cls" class="image-card mdl-shadow--16dp" @click="displayDetails(cl.students)">
+       <div v-for="cl in this.clsses" class="image-card mdl-shadow--16dp" @click="displayDetails(cl.students,cl.id)">
           <div class="image-card__picture">
             <img src="../assets/class1.png" />
           </div>
@@ -21,26 +21,95 @@
 </template>
 <script>
 import data from '../data'
+import gql from 'graphql-tag';
+
 export default {
     methods: {
-      displayDetails (s) {
-          console.log(s)
-        this.$router.push({name: 'class', params: {students:s} })
+      displayDetails (s,i) {
+        this.$router.push({name: 'class', params: {students:s, cls_id:i} })
+      },
+      getData() {
+          //console.log(this.clsses)
+          console.log(this.clsses)
+          //this.cls = this.clsses
+          //console.log(this.cls)
       }
     },
+	apollo: {
+    	$client: 'a',
+        $loadingKey: 'loading',
+        clsses: gql`{  
+                    clsses {
+                        id
+                        clssName
+                        students {
+                            id
+                            fname
+                            lname
+                            loginName
+                            password
+                            average
+                            totalHours
+                            weekHours
+                            stories
+                        }
+                    }
+                }`
+  	},
     data () {
       return {
-          loggedIn: true,
-          token: "nu",
-        'cls': data.clsses
+            loggedIn: false,
+            token: null,
+            cls: data.clsses,
+            clsses: ''
       }
     },
     created() {
-        //this.token = localStorage.getItem("token")
+        this.token = localStorage.getItem("token")
         if (!this.token) {
             this.loggedIn = false
             this.$router.push({name: 'login'})
+        } else {
+            this.getData()
         }
+    },
+    mounted() {
+        this.$bus.$on('newClassEvent', event => {
+                console.log(event);
+                this.cls.push({
+                    clssName: event.clssName,
+                    students: []
+                })
+                console.log(this.cls)
+
+            });
+            this.$apollo.query({
+                query: gql`{  
+                    clsses {
+                        id
+                        clssName
+                        students {
+                            id
+                            fname
+                            lname
+                            loginName
+                            password
+                            average
+                            totalHours
+                            weekHours
+                            stories
+                        }
+                    }
+                }`
+            }).then((data) => {
+                  // Result
+                  //console.log(data)
+                  this.clsses = data.data.clsses
+                  console.log(this.clsses)
+    		}).catch((error) => {
+      			// Error
+      			console.error(error)
+    		})
     }
 }
 </script>

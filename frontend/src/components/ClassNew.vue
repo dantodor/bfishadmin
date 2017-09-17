@@ -3,19 +3,21 @@
 	<main class="mdl-layout__content">
 		<div class="mdl-card mdl-shadow--6dp">
 			<div class="mdl-card__title mdl-color--primary mdl-color-text--white">
-				<h2 class="mdl-card__title-text">New student</h2>
+				<h2 class="mdl-card__title-text">New class</h2>
 			</div>
 	  	<div class="mdl-card__supporting-text">
 				<form action="#">
+					<div style = "background-color:#ddd; width: 100%; margin: 0 auto;"> Class name :</div>
 					<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
 						<input class="mdl-textfield__input" type="text" id="clsname" v-model="clss.clssName"/>
-						<label class="mdl-textfield__label" for="clsname">Class name</label>
+						
 					</div>
 				</form>
 
 			</div>
 			<div class="mdl-card__actions mdl-card--border">
 				<button class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" @click="saveClicked">Save</button>
+				<button class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" @click="cancelClicked">Cancel</button>
 			</div>
 		</div>
 	</main>
@@ -23,6 +25,7 @@
 </template>
 
 <script>
+import gql from 'graphql-tag';
 
 export default {
     data () {
@@ -32,10 +35,35 @@ export default {
 			}
 
 		}		
-    }, 
+	}, 
+	apollo: {
+    	$client: 'a',
+        $loadingKey: 'loading',
+  	},
     methods: {
         saveClicked() {
-            console.log(this.clss)
+			this.$bus.$emit('newClassEvent', this.clss  );
+			this.$apollo.mutate({
+      			// Query
+      			mutation: gql`mutation CreateClass($clss: ClassInput!) {
+					createClass(input: $clss) {
+    					clssName
+					}
+      			}`,
+      			// Parameters
+      			variables: {
+        			clss: this.clss
+				  }
+			}).then((data) => {
+      			// Result
+      			console.log(data)
+    		}).catch((error) => {
+      			// Error
+      			console.error(error)
+    		})
+            this.$router.push({name: 'home' })
+		},
+		cancelClicked() {
             this.$router.push({name: 'home' })
         }
     } 

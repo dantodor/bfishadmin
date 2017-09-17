@@ -1,7 +1,5 @@
 <template>
-  <div class="mdl-layout mdl-js-layout mdl-color--grey-100">
-	<main class="mdl-layout__content">
-		<div class="mdl-grid">
+  
 			<div class="mdl-card mdl-cell mdl-cell--12-col mdl-cell--8-col-tablet mdl-shadow--16dp">
 				<div class="mdl-card__media">
 					<img src="../assets/student.png" alt="" style="padding:10px;"/>
@@ -33,16 +31,6 @@ export default {
 	props: ["std"],
 	data() {
 		return { 
-			// student: {
-			// 	weekHours: 10,
-			// 	totalHours: 45,
-			// 	stories: 3,
-			// 	password: "anagha",
-			// 	loginName: "anagha",
-			// 	lname: "Ramsaran",
-			// 	fname: "Anagha",
-			// 	average: 67
-			// }
 		}
 	},
 	methods: {

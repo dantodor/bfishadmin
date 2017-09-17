@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import HomeView from '../components/Home'
 import LoginView from '../components/Login'
+import LogoutView from '../components/Logout'
 import StudentView from '../components/Student'
 import ClassView from '../components/Class'
 import ClassNewView from '../components/ClassNew'
@@ -43,12 +44,19 @@ export default new Router({
     {
       path: '/newst',
       name: 'newst',
-      component: StudentNewView
+      component: StudentNewView,
+      props: true
     },
     {
       path: '/newcls',
       name: 'newcls',
-      component: ClassNewView
+      component: ClassNewView,
+      props: true
+    },
+    {
+      path: '/logout',
+      name: 'logout',
+      component: LogoutView
     }
   ]
 })

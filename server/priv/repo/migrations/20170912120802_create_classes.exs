@@ -3,7 +3,7 @@ defmodule Bfish.Repo.Migrations.CreateClasses do
 
   def change do
     create table(:classes) do
-      add :class_name, :string
+      add :clss_name, :string
       add :user_id, references(:users, on_delete: :nothing)
 
       timestamps()

@@ -9,7 +9,7 @@
       <span class="mdl-layout-title">BFAdmin</span>
       <nav class="mdl-navigation">
         <router-link class="mdl-navigation__link" to="/" @click.native="hideMenu">Home</router-link>
-        <router-link class="mdl-navigation__link" to="/post" @click.native="hideMenu">Search</router-link>
+        <router-link class="mdl-navigation__link" to="/logout" @click.native="hideMenu">Log out</router-link>
       </nav>
     </div>
     <main class="mdl-layout__content">
@@ -21,6 +21,7 @@
 <script>
 
 require('material-design-lite')
+
 
 export default {
   name: 'app',

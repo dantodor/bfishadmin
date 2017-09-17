@@ -1,45 +1,33 @@
 <template>
-  <div>
-    <div class="mdl-grid">
-      <div class="mdl-cell mdl-cell--6-col mdl-cell--4-col-phone">
-       <div v-for="student in this.students">
-           <Student :std="student"></Student>
+  <div class="mdl-layout mdl-js-layout mdl-color--grey-100">
+	<main class="mdl-layout__content">
+		<div class="mdl-grid">
+            <div class="mdl-cell mdl-cell--6-col mdl-cell--4-col-phone">
+                <div v-for="student in this.students">
+                    <Student :std="student"></Student>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-    <router-link class="add-picture-button mdl-button mdl-js-button mdl-button--fab mdl-button--colored" to="/newst">
+    </main>
+    <router-link class="add-picture-button mdl-button mdl-js-button mdl-button--fab mdl-button--colored" :to="{name: 'newst', params:{clss_id: cls_id,students: students}}">
       <i class="material-icons">add</i>
     </router-link>
   </div>
 
 </template>
 <script>
-import data from '../data'
+
 import Student from './Student'
 
   export default {
     components: {
         Student
     },
-    methods: {
-      displayDetails (id) {
-        this.$router.push({name: 'student'})
-      }
-    },
-    props: ["students"],
-    data () {
-      return {
-          loggedIn: true,
-          token: "nu",
-        'cls': data.clsses
-      }
-    },
-    created() {
-        //this.token = localStorage.getItem("token")
-        if (!this.token) {
-            this.loggedIn = false
-            this.$router.push({name: 'login'})
-        }
+    props: ["students", "cls_id"],
+    mounted() {
+        this.$bus.$on('newStudentEvent', event => {
+                console.log(event);
+            });
     }
   }
 </script>

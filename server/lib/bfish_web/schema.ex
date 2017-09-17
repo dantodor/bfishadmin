@@ -7,7 +7,7 @@ defmodule BfishWeb.Schema do
 
   query do
 
-    field :classes, list_of(:class) do
+    field :clsses, list_of(:class) do
       resolve &BfishWeb.Resolvers.School.list_filtered_classes/3
     end
 
@@ -26,6 +26,10 @@ defmodule BfishWeb.Schema do
             resolve &BfishWeb.Resolvers.School.create_student/3
     end
 
+    field :update_student, :student do
+      arg :input, non_null(:student_update_input)
+      resolve &BfishWeb.Resolvers.School.update_student/3
+    end
 
     field :login_user, :user_session do
       arg :email, non_null(:string)

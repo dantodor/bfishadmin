@@ -7,34 +7,32 @@
 			</div>
 	  	<div class="mdl-card__supporting-text">
 				<form action="#">
+					<div style = "background-color:#ddd; width: 100%; margin: 0 auto;"> Username :</div>
 					<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-						<span style = "background-color:#ddd;">Username</span>
-                        <span>
-                        <input class="mdl-textfield__input" type="text" id="username" v-model="student.loginName"/>
-						</span>
+						
+                        <input class="mdl-textfield__input" type="text" id="username" v-model="stnd.loginName"/>
+						
 					</div>
+					<div style = "background-color:#ddd; width: 100%; margin: 0 auto;"> Password :</div>
 					<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-						<span style = "background-color:#ddd;">Password</span>
-                        <span>
-                        <input class="mdl-textfield__input" type="text" id="userpass" v-model="student.password"/>
-						</span>
+						<input class="mdl-textfield__input" type="text" id="userpass" v-model="stnd.password"/>
+						
 					</div>
+					<div style = "background-color:#ddd; width: 100%; margin: 0 auto;"> First name :</div>
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-						<span style = "background-color:#ddd;">First name</span>
-                        <span>
-                        <input class="mdl-textfield__input" type="text" id="fname" v-model="student.fname"/>
-						</span>
+						<input class="mdl-textfield__input" type="text" id="fname" v-model="stnd.fname"/>
+						
 					</div>
+					<div style = "background-color:#ddd; width: 100%; margin: 0 auto;"> Last name :</div>
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-						<span style = "background-color:#ddd;">Last name</span>
-                        <span>
-                        <input class="mdl-textfield__input" type="text" id="lname" v-model="student.lname"/>
-						</span>
+						<input class="mdl-textfield__input" type="text" id="lname" v-model="stnd.lname"/>
+						
 					</div>
 				</form>
 			</div>
 			<div class="mdl-card__actions mdl-card--border">
 				<button class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" @click="saveClicked">Save</button>
+				<button class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" @click="cancelClicked">Cancel</button>
 			</div>
 		</div>
 	</main>
@@ -42,18 +40,54 @@
 </template>
 
 <script>
+import gql from 'graphql-tag';
 export default {
     props:["student"],
     data () {
         return {
+			stnd: Object.assign({}, this.student)
         }
-    }, 
+	},  
+	apollo: {
+    	$client: 'a',
+        $loadingKey: 'loading',
+  	},
     methods: {
         saveClicked() {
-            console.log(this.student)
+			//stnd = this.student
+			console.log(this.stnd)
+			this.stnd.id = parseInt(this.student.id)
+			delete this.stnd['__typename']
+			console.log(this.stnd)
+			this.$apollo.mutate({
+      			// Query
+      			mutation: gql`mutation UpdateStudent($std: StudentInput!) {
+					updateStudent(input: $std) {
+    					id
+					}
+      			}`,
+      			// Parameters
+      			variables: {
+        			std: this.stnd
+				  }
+			}).then((data) => {
+      			// Result
+				  console.log("Succes")
+				  console.log(data)
+    		}).catch((error) => {
+      			// Error
+      			console.error(error)
+    		})
+			this.$router.push({name: 'home' })
+		}
+		,
+		cancelClicked() {
             this.$router.push({name: 'home' })
         }
-    } 
+	} ,
+	created() {
+		console.log("Got student with ID :"+this.student.id)
+	}
 }
 
 </script>
