@@ -1,16 +1,16 @@
 <template>
   <div class="mdl-layout mdl-js-layout mdl-color--grey-100">
-	<main class="mdl-layout__content">
-		<div class="mdl-grid">
-            <div class="mdl-cell mdl-cell--6-col mdl-cell--4-col-phone">
+    <main class="mdl-layout__content">
+        <div class="mdl-grid">
+            
                 <div v-for="student in this.students">
                     <Student :std="student"></Student>
                 </div>
-            </div>
+            
         </div>
     </main>
     <router-link class="add-picture-button mdl-button mdl-js-button mdl-button--fab mdl-button--colored" :to="{name: 'newst', params:{clss_id: cls_id,students: students}}">
-      <i class="material-icons">add</i>
+        <i class="material-icons">add</i>
     </router-link>
   </div>
 
@@ -33,6 +33,8 @@ import Student from './Student'
 </script>
 
 <style scoped>
+
+
   .add-picture-button {
     position: fixed;
     right: 24px;
