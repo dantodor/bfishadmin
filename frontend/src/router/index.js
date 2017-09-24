@@ -3,7 +3,6 @@ import Router from 'vue-router'
 import HomeView from '../components/Home'
 import LoginView from '../components/Login'
 import LogoutView from '../components/Logout'
-import StudentView from '../components/Student'
 import ClassView from '../components/Class'
 import ClassNewView from '../components/ClassNew'
 import StudentEditView from '../components/StudentEdit'
@@ -23,11 +22,6 @@ export default new Router({
       path: '/login',
       name: 'login',
       component: LoginView
-    },
-    {
-      path: '/student',
-      name: 'student',
-      component: StudentView
     },
     {
       path: '/class',

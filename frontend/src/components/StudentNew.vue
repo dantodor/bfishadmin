@@ -7,22 +7,22 @@
 			</div>
 	  	<div class="mdl-card__supporting-text">
 				<form action="#">
-					<div style = "background-color:#ddd; width: 100%; margin: 0 auto;"> Username :</div>
+					<div style = "background-color:#ddd; width: 100%; margin: 0 auto;"><strong> Username :</strong></div>
 					<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
 						<input class="mdl-textfield__input" type="text" id="username" v-model="student.loginName"/>
 						
 					</div>
-					<div style = "background-color:#ddd; width: 100%; margin: 0 auto;"> Password :</div>
+					<div style = "background-color:#ddd; width: 100%; margin: 0 auto;"> <strong>Password :</strong></div>
 					<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
 						<input class="mdl-textfield__input" type="text" id="userpass" v-model="student.password"/>
 						
 					</div>
-					<div style = "background-color:#ddd; width: 100%; margin: 0 auto;"> First name :</div>
+					<div style = "background-color:#ddd; width: 100%; margin: 0 auto;"> <strong>First name :</strong></div>
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
 						<input class="mdl-textfield__input" type="text" id="fname" v-model="student.fname"/>
 						
 					</div>
-					<div style = "background-color:#ddd; width: 100%; margin: 0 auto;"> Last name :</div>
+					<div style = "background-color:#ddd; width: 100%; margin: 0 auto;"> <strong>Last name :</strong></div>
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
 						<input class="mdl-textfield__input" type="text" id="lname" v-model="student.lname"/>
 						
@@ -41,6 +41,7 @@
 
 <script>
 import gql from 'graphql-tag';
+import {mapActions} from 'vuex'
 
 export default {
     data () {
@@ -50,55 +51,33 @@ export default {
 				loginName: "",
 				lname: "",
 				fname: "",
-				clss_id: parseInt(this.clss_id)
-			},
-			stnds: []
-
+				clss_id: 0
+			}
 		}		
 	}, 
-	apollo: {
-    	$client: 'a',
-        $loadingKey: 'loading',
-  	},
+	computed: {
+        activeCls() {
+            return this.$store.state.activeCls
+        }
+    },
 	props: ["clss_id",'students'],
     methods: {
+		...mapActions (
+          [
+              'addStudent'
+        	]
+      	),
         saveClicked() {
-			this.$apollo.mutate({
-      			// Query
-      			mutation: gql`mutation CreateStudent($std: StudentInput!) {
-					createStudent(input: $std) {
-    					id
-					}
-      			}`,
-      			// Parameters
-      			variables: {
-        			std: this.student
-				  }
-			}).then((data) => {
-      			// Result
-				  console.log("starting")
-				  console.log(this.students)
-				  var arrayLength = this.students.length;
-				  for (var i = 0; i < arrayLength; i++){
-					this.stnds.push(this.students[i])
-				  }
-				  console.log(this.stnds)
-				  var a = this.student.clss_id.toString
-				  this.student.clss_id = a
-				  this.student.id = data.data.createStudent.id
-				  console.log(this.student)
-				  this.stnds.push(this.student)
-    		}).catch((error) => {
-      			// Error
-				  console.error(error)
-				  this.stnds = this.students
-    		})
-			this.$router.push({name: 'class', params: {students:this.stnds,clss_id:this.clss_id} })
+			this.addStudent(this.student)
+			this.$router.push({name: 'class' })
 			
 		},
 		cancelClicked() {
 			this.$router.push({name: 'home' })
         }
+	},
+	created() {
+		this.student.clss_id = parseInt(this.activeCls.id)
 	} 
 }
 

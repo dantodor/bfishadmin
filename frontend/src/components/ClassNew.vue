@@ -7,7 +7,7 @@
 			</div>
 	  	<div class="mdl-card__supporting-text">
 				<form action="#">
-					<div style = "background-color:#ddd; width: 100%; margin: 0 auto;"> Class name :</div>
+					<div style = "background-color:#ddd; width: 100%; margin: 0 auto;"><h4> Class name :</h4></div>
 					<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
 						<input class="mdl-textfield__input" type="text" id="clsname" v-model="clss.clssName"/>
 						
@@ -26,41 +26,32 @@
 
 <script>
 import gql from 'graphql-tag';
+import {mapActions} from 'vuex'
 
 export default {
     data () {
         return {
 			clss: {
-				clssName: ""
+				id: this.nextClsId,
+				clssName: "",
+				students: []
 			}
 
 		}		
 	}, 
-	apollo: {
-    	$client: 'a',
-        $loadingKey: 'loading',
-  	},
+	computed: {
+        nextClsId() {
+            return this.$store.state.j
+        }
+    },
     methods: {
+		...mapActions (
+          	[
+              'addClss'
+        	]
+      	),
         saveClicked() {
-			this.$bus.$emit('newClassEvent', this.clss  );
-			this.$apollo.mutate({
-      			// Query
-      			mutation: gql`mutation CreateClass($clss: ClassInput!) {
-					createClass(input: $clss) {
-    					clssName
-					}
-      			}`,
-      			// Parameters
-      			variables: {
-        			clss: this.clss
-				  }
-			}).then((data) => {
-      			// Result
-      			console.log(data)
-    		}).catch((error) => {
-      			// Error
-      			console.error(error)
-    		})
+			this.addClss(this.clss)
             this.$router.push({name: 'home' })
 		},
 		cancelClicked() {

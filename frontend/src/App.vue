@@ -8,13 +8,27 @@
     <div class="mdl-layout__drawer">
       <span class="mdl-layout-title">BFAdmin</span>
       <nav class="mdl-navigation">
-        <router-link class="mdl-navigation__link" to="/" @click.native="hideMenu">Home</router-link>
-        <router-link class="mdl-navigation__link" to="/logout" @click.native="hideMenu">Log out</router-link>
+        <router-link class="mdl-navigation__link" to="/" @click.native="hideMenu">
+          <span class="material-icons">home</span>
+          Home
+        </router-link>
+        <router-link class="mdl-navigation__link" to="/logout" @click.native="hideMenu">
+          <span class="material-icons">exit_to_app</span>
+          Log out
+        </router-link>
       </nav>
     </div>
     <main class="mdl-layout__content">
         <router-view></router-view>
     </main>
+    <footer class="mdl-mini-footer">
+        <div class="mdl-mini-footer--left-section">
+          BrighFishLearning 2017
+        </div>
+        <div class="mdl-mini-footer--right-section">
+          Questions ? support@brightfishlearning.com
+        </div>
+    </footer>`
   </div>
 </template>
 
@@ -22,6 +36,7 @@
 
 require('material-design-lite')
 
+import {mapActions} from 'vuex'
 
 export default {
   name: 'app',
@@ -29,6 +44,21 @@ export default {
     hideMenu: function () {
       document.getElementsByClassName('mdl-layout__drawer')[0].classList.remove('is-visible')
       document.getElementsByClassName('mdl-layout__obfuscator')[0].classList.remove('is-visible')
+    },
+    ...mapActions (
+          [
+              'getClsses'
+        ]
+      )
+  },
+  created() {
+    this.token = localStorage.getItem("token")
+    if (!this.token) {
+        this.loggedIn = false
+        this.$router.push({name: 'login'})
+    } else {
+        this.getClsses()
+        console.log('logged in')
     }
   }
 }
@@ -49,7 +79,6 @@ body {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
 }
 
 main {
@@ -61,7 +90,6 @@ header {
   margin: 0;
   height: 56px;
   padding: 0 16px 0 24px;
-  background-color: #35495E;
   color: #ffffff;
 }
 

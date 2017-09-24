@@ -2,9 +2,9 @@
   <div>
     <div class="mdl-grid">
       
-       <div v-for="cl in this.clsses" class="image-card mdl-cell mdl-cell--4-col mdl-cell--4-col-phone mdl-shadow--16dp" @click="displayDetails(cl.students,cl.id)">
+       <div v-for="cl in this.clsses" class="image-card mdl-cell mdl-cell--4-col mdl-cell--4-col-phone mdl-shadow--16dp" @click="displayDetails(cl)">
           <div class="image-card__picture">
-            <img src="../assets/class1.png" />
+            <img src="../assets/class_256.png" />
           </div>
           <div class="image-card__comment mdl-card__actions">
             <span><strong>{{ cl.clssName }}</strong></span>
@@ -19,105 +19,45 @@
 
 </template>
 <script>
-import data from '../data'
 import gql from 'graphql-tag';
+import {mapActions} from 'vuex'
 
 export default {
-    methods: {
-      displayDetails (s,i) {
-        this.$router.push({name: 'class', params: {students:s, cls_id:i} })
-      },
-      getData() {
-          //console.log(this.clsses)
-          console.log(this.clsses)
-          //this.cls = this.clsses
-          //console.log(this.cls)
-      }
+    computed: {
+        clsses () {
+            return this.$store.state.clsses
+        },
+        activeCls() {
+            return this.$store.state.activeCls
+        }
     },
-	apollo: {
-    	$client: 'a',
-        $loadingKey: 'loading',
-        clsses: gql`{  
-                    clsses {
-                        id
-                        clssName
-                        students {
-                            id
-                            fname
-                            lname
-                            loginName
-                            password
-                            average
-                            totalHours
-                            weekHours
-                            stories
-                        }
-                    }
-                }`
-  	},
+    methods: {
+      displayDetails (clss) {
+        this.updateActiveCls(clss)
+        this.$router.push({name: 'class'})
+      },
+      ...mapActions (
+          [
+              'updateActiveCls',
+              'getClsses'
+        ]
+      )
+    },
     data () {
       return {
             loggedIn: false,
-            token: null,
-            cls: data.clsses,
-            clsses: ''
+            token: null
       }
-    },
-    created() {
-        this.token = localStorage.getItem("token")
-        if (!this.token) {
-            this.loggedIn = false
-            this.$router.push({name: 'login'})
-        } else {
-            this.getData()
-        }
-    },
-    mounted() {
-        this.$bus.$on('newClassEvent', event => {
-                console.log(event);
-                this.cls.push({
-                    clssName: event.clssName,
-                    students: []
-                })
-                console.log(this.cls)
-
-            });
-            this.$apollo.query({
-                query: gql`{  
-                    clsses {
-                        id
-                        clssName
-                        students {
-                            id
-                            fname
-                            lname
-                            loginName
-                            password
-                            average
-                            totalHours
-                            weekHours
-                            stories
-                        }
-                    }
-                }`
-            }).then((data) => {
-                  // Result
-                  //console.log(data)
-                  this.clsses = data.data.clsses
-                  console.log(this.clsses)
-    		}).catch((error) => {
-      			// Error
-      			console.error(error)
-    		})
     }
 }
+
 </script>
 
 <style scoped>
   .add-picture-button {
     position: fixed;
     right: 24px;
-    bottom: 24px;
+    bottom: 74px;
     z-index: 998;
   }
   .image-card {

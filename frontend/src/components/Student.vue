@@ -1,87 +1,195 @@
-<template>
+<<template>
+			<div class="my-card mdl-card mdl-cell mdl-shadow--16dp">
+				
+                <div class = "mdl-grid mdl-card__supporting-text">
+                    <div class = "mdl-cell mdl-cell--6-col">
+                        <img src="../assets/userm.png" />
+                    </div>
+                    <div class = "mdl-cell mdl-cell--6-col">
+                        <font size=4> <strong> {{std.fname}} {{std.lname}}</strong></font>
+                        
+                    </div>
+                    <div class = "mdl-cell mdl-cell--6-col">
+                        <radial-progress-bar :diameter="100"
+                            :completed-steps="c_steps"
+                            :total-steps="100" 
+                            :start-color="startColor"
+                            :stop-color="stopColor" >
+                            <p><strong>{{ c_steps }}%</strong></p>
+                        </radial-progress-bar>
+                    </div>
+                    <div class = "mdl-cell mdl-cell--6-col">
+                        <span class="mdl-chip mdl-chip--contact">
+                                <span class="mdl-chip__contact mdl-color--light-blue mdl-color-text--white">
+                                    {{c_stories}}
+                                </span>
+                                <span class="mdl-chip__text">Stories completed</span>
+                        </span>
+                        <span class="mdl-chip mdl-chip--contact">
+                                <span class="mdl-chip__contact mdl-color--teal mdl-color-text--white">
+                                    {{c_thours}}
+                                </span>
+                                <span class="mdl-chip__text">Total hours</span>
+                        </span>
+                        <span class="mdl-chip mdl-chip--contact">
+                                <span class="mdl-chip__contact mdl-color--teal mdl-color-text--white">
+                                    {{c_whours}}
+                                </span>
+                                <span class="mdl-chip__text">Week hours</span>
+                        </span>
 
-			<div class="mdl-card card-lesson mdl-cell mdl-cell--4-col mdl-cell--2-col-phone mdl-shadow--16dp">
-				<div class="mdl-card__media">
-					<img src="../assets/student.png" alt=""/>
-				</div>
-				<div class="mdl-card__title">
-					<h1 class="mdl-card__title-text mdl-color-text--light-blue-900">{{std.fname+' '+std.lname}}</h1>
-				</div>
-				<div class="mdl-grid">
-					<div class="mdl-cell">
-						<h3>Average {{std.average}}%</h3>
-					</div>
-					<div class="mdl-cell r-align">
-						<span class="mdl-chip mdl-chip--contact">
-							<span class="mdl-chip__contact mdl-color--light-blue mdl-color-text--white">{{std.stories}}</span>
-							<span class="mdl-chip__text">Stories</span>
-						</span>
-						<span class="mdl-chip mdl-chip--contact">
-							<span class="mdl-chip__contact mdl-color--teal mdl-color-text--white">{{std.totalHours}}</span>
-							<span class="mdl-chip__text">Total hours</span>
-						</span>
-						<span class="mdl-chip mdl-chip--contact">
-							<span class="mdl-chip__contact mdl-color--teal mdl-color-text--white">{{std.weekHours}}</span>
-							<span class="mdl-chip__text">Week hours</span>
-						</span>
-					</div>
-				</div>
+                    </div>
+                </div>
 				<div class="mdl-card__actions mdl-card--border">
-    				<button class="mdl-button mdl-button--icon mdl-color-text--blue-grey-300" @click="editClicked">
-						<i class="material-icons">edit</i>
-					</button>
-	  			</div>
-			</div>
+                    <a class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-color-text--light-blue-900">Read More</a>
+                    <div class="mdl-layout-spacer"></div>
+                    <button class="mdl-button mdl-button--icon mdl-color-text--blue-grey-300" @click="editClicked">
+                        <i class="material-icons">edit</i>
+                    </button>
+                    
+                </div>
+            </div>
 </template>
 
-<script>
-export default {
-	props: ["std"],
-	data() {
-		return { 
-		}
-	},
-	methods: {
-		editClicked() {
-			this.$router.push({name: 'edits', params: {student:this.std} })
-		}
-	}
+<<script>
 
-}  
+import RadialProgressBar from 'vue-radial-progress'
+import {mapActions} from 'vuex'
+
+
+export default {
+    computed: {
+        activeCls() {
+            return this.$store.state.activeCls
+        },
+        c_stories() {
+            var a = 0
+            if(this.std.stories) 
+                a=this.std.stories
+            return a
+        },
+        c_thours() {
+            var a = 0 
+            if(this.std.totalHours) 
+                a = this.std.totalHours
+            return a
+        },
+        c_whours() {
+            var a = 0 
+            if(this.std.weekHours) 
+                a = this.std.weekHours 
+            return a
+        },
+        c_steps() {
+            var a = 0 
+            if(this.std.average) 
+                a = this.std.average 
+            return a
+        }
+    },
+    props: ["std"],
+    data () {
+        return {
+            startColor: '#4286f4',
+            stopColor: '#4286f4'
+        }
+    },
+    components: {
+        RadialProgressBar
+    },
+    methods: {
+		...mapActions (
+          [
+              'updateActiveStd'
+        ]
+      ),
+		editClicked() {
+			this.updateActiveStd(this.std)
+			this.$router.push({name: 'edits' })
+		},
+		
+    },
+    created() {
+        switch(true) {
+            case (this.std.average <= 50) : {
+                this.startColor = '#f2352b'
+                this.stopColor = '#ef8681'
+                break;
+            }
+            case (this.std.average > 50 && this.std.average <= 75) :  {
+                this.startColor = '#f9ee1b'
+                this.stopColor = '#f7f28c'
+                break;
+            }
+            default : {
+                this.startColor = '#16f734'
+                this.stopColor = '#9df2a8'
+                break;    
+            } 
+        }
+    }
+}
+
 </script>
 
-<style scoped>
-.r-align {
-	: left;
-	padding-left: 60px;
-}
-.card-lesson {
-  margin: 10px;
-  min-width: 350px;
-  min-height: 100px;
-  & > .mdl-card__actions {
-    display: flex;
-    box-sizing: border-box;
-    align-items: center;
-  }
-  & > .mdl-card__title {
-    align-items: flex-start;
-    & > h4 {
-      margin-top: 0;
-    }
-  }
-  & > .mdl-card__title,
-  & > .mdl-card__supporting-text,
-  & > .mdl-card__actions,
-  & > .mdl-card__actions > .mdl-button {
-    color: #fff;
-  }
+
+<<style scoped>
+
+.my-card.mdl-card {
+            width: 360px;
+            min-width: 360px;
+            max-width: 360px;
 }
 
+.mdl-grid {
+	margin-top: 2px;    
+}
+.mdl-cell {
+    width:145px;
+    min-width: 145px;
+}
 .mdl-card__media > img {
-    width:100%;
-	padding: 10px;
+	max-width: 100%;
+}
+.mdl-card__actions {
+	display: flex;
+	box-sizing:border-box;
+	align-items: center;
+}
+.mdl-card__actions > .mdl-button--icon {
+	margin-right: 3px;
+	margin-left: 3px;
+}
+
+.mdl-chip {
+  height: 32px;
+  width: 140px;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  line-height: 32px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 16px;
+  background-color: #dedede;
+  display: inline-block;
+  color: rgba(0,0,0, 0.87);
+  margin: 2px 0;
+  font-size: 0;
+  white-space: nowrap; 
   }
 
+  .mdl-chip__contact {
+    height: 32px;
+    width: 32px;
+    border-radius: 16px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 10px;
+    overflow: hidden;
+    text-align: center;
+    font-size: 18px;
+    line-height: 32px; 
+    }
 
 </style>
+
+

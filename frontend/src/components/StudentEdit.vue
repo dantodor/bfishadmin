@@ -7,23 +7,23 @@
 			</div>
 	  	<div class="mdl-card__supporting-text">
 				<form action="#">
-					<div style = "background-color:#ddd; width: 100%; margin: 0 auto;"> Username :</div>
+					<div style = "background-color:#ddd; width: 100%; margin: 0 auto;"> <strong>Username :</strong></div>
 					<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
 						
                         <input class="mdl-textfield__input" type="text" id="username" v-model="stnd.loginName"/>
 						
 					</div>
-					<div style = "background-color:#ddd; width: 100%; margin: 0 auto;"> Password :</div>
+					<div style = "background-color:#ddd; width: 100%; margin: 0 auto;"> <strong>Password :</strong></div>
 					<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
 						<input class="mdl-textfield__input" type="text" id="userpass" v-model="stnd.password"/>
 						
 					</div>
-					<div style = "background-color:#ddd; width: 100%; margin: 0 auto;"> First name :</div>
+					<div style = "background-color:#ddd; width: 100%; margin: 0 auto;"> <strong>First name :</strong></div>
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
 						<input class="mdl-textfield__input" type="text" id="fname" v-model="stnd.fname"/>
 						
 					</div>
-					<div style = "background-color:#ddd; width: 100%; margin: 0 auto;"> Last name :</div>
+					<div style = "background-color:#ddd; width: 100%; margin: 0 auto;"> <strong>Last name :</strong></div>
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
 						<input class="mdl-textfield__input" type="text" id="lname" v-model="stnd.lname"/>
 						
@@ -40,53 +40,38 @@
 </template>
 
 <script>
-import gql from 'graphql-tag';
+import gql from 'graphql-tag'
+import {mapActions} from 'vuex'
+
 export default {
-    props:["student"],
+	computed: {
+        activeStd() {
+            return this.$store.state.activeStd
+        }
+    },
     data () {
         return {
-			stnd: Object.assign({}, this.student)
+			stnd: {}
         }
 	},  
-	apollo: {
-    	$client: 'a',
-        $loadingKey: 'loading',
-  	},
     methods: {
         saveClicked() {
-			//stnd = this.student
-			console.log(this.stnd)
-			this.stnd.id = parseInt(this.student.id)
-			delete this.stnd['__typename']
-			console.log(this.stnd)
-			this.$apollo.mutate({
-      			// Query
-      			mutation: gql`mutation UpdateStudent($std: StudentInput!) {
-					updateStudent(input: $std) {
-    					id
-					}
-      			}`,
-      			// Parameters
-      			variables: {
-        			std: this.stnd
-				  }
-			}).then((data) => {
-      			// Result
-				  console.log("Succes")
-				  console.log(data)
-    		}).catch((error) => {
-      			// Error
-      			console.error(error)
-    		})
-			this.$router.push({name: 'home' })
+			this.updateStudent(this.stnd)
+			this.$router.push({name: 'class' })
 		}
 		,
 		cancelClicked() {
-            this.$router.push({name: 'home' })
-        }
+            this.$router.push({name: 'class' })
+		},
+		...mapActions (
+          [
+              'updateStudent'
+        ]
+      )
 	} ,
 	created() {
-		console.log("Got student with ID :"+this.student.id)
+		console.log("Got student with ID :"+this.activeStd.id)
+		this.stnd = Object.assign({}, this.activeStd)
 	}
 }
 

@@ -2,17 +2,20 @@
   <div class="mdl-layout mdl-js-layout mdl-color--grey-100">
 	<main class="mdl-layout__content">
 		<div class="mdl-card mdl-shadow--6dp">
+			<div class="mdl-card__media">
+    			<img src="../assets/login.png" alt="" />
+  			</div>
 			<div class="mdl-card__title mdl-color--primary mdl-color-text--white">
 				<h2 class="mdl-card__title-text">BrightFish Learning</h2>
 			</div>
 	  	<div class="mdl-card__supporting-text">
 				<form action="#">
-					<div style = "background-color:#ddd; width: 100%; margin: 0 auto;"> Username :</div>
+					<div style = "background-color:#ddd; width: 100%; margin: 0 auto;"><h4> Username :</h4></div>
 					<div class="mdl-textfield mdl-js-textfield">
 						<input class="mdl-textfield__input" type="text" id="username" v-model="username"/>
 						
 					</div>
-					<div style = "background-color:#ddd; width: 100%; margin: 0 auto;"> Password :</div>
+					<div style = "background-color:#ddd; width: 100%; margin: 0 auto;"> <h4>Password :</h4></div>
 					<div class="mdl-textfield mdl-js-textfield">
 						<input class="mdl-textfield__input" type="password" id="userpass" v-model="password"/>
 						
@@ -31,7 +34,8 @@
 <script>
 
 import gql from 'graphql-tag';
-
+import apolloClient from '../apollo.js'
+import {mapActions} from 'vuex'
 
 export default {
     data () {
@@ -42,15 +46,14 @@ export default {
 			errorMessage: 'Incorrect username or password, try again'
         }
 	},
-	apollo: {
-    	$client: 'a',
-    	$loadingKey: 'loading',
-  	},
     methods: {
+		...mapActions (
+          	[
+              'getClsses'
+        	]
+      	),
         logClicked() {
-            console.log(this.username)
-			console.log(this.password)
-			this.$apollo.mutate({
+			apolloClient.mutate({
 				// Query
 				mutation: gql`mutation ($email: String!, $password: String!) {
 					loginUser(email: $email, password: $password) {
@@ -64,8 +67,9 @@ export default {
 				}
 			}).then((data) => {
 				// Result
-				console.log(data.data.loginUser.token);
+				// console.log(data.data.loginUser.token);
 				localStorage.setItem("token",data.data.loginUser.token)
+				this.getClsses()
 				this.$router.push({name: 'home' })
 			}).catch((error) => {
 				// Error
@@ -75,7 +79,8 @@ export default {
 				//alert('Incorrect username or password, try again')
 				console.error(error);
 		});
-		
+		// localStorage.setItem("token","blah")
+		// this.$router.push({name: 'home' })
         }
     } 
 }
@@ -90,6 +95,12 @@ export default {
 .mdl-layout__content {
 	padding: 24px;
 	flex: none;
+	
 }
+.mdl-card__media > img {
+  	max-width: 100%;
+
+}
+
 </style>
 
