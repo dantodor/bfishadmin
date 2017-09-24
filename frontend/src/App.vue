@@ -19,7 +19,9 @@
       </nav>
     </div>
     <main class="mdl-layout__content">
+      <transition mode="out-in">
         <router-view></router-view>
+      </transition>
     </main>
     <footer class="mdl-mini-footer">
         <div class="mdl-mini-footer--left-section">
@@ -93,6 +95,13 @@ header {
   color: #ffffff;
 }
 
+footer {
+  margin: 0;
+  height: 36px;
+  padding: 12px 16px 0 24px;
+  color: #ffffff;
+}
+
 header span {
   display: block;
   position: relative;
@@ -103,4 +112,13 @@ header span {
   box-sizing: border-box;
   padding-top: 16px;
 }
+
+.v-enter-active, .v-leave-active {
+  transition: opacity 0.7s;
+}
+
+.v-enter-active, .v-leave-active {
+  opacity: 0;
+}
+
 </style>

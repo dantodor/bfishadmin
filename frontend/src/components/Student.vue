@@ -14,7 +14,8 @@
                             :completed-steps="c_steps"
                             :total-steps="100" 
                             :start-color="startColor"
-                            :stop-color="stopColor" >
+                            :stop-color="stopColor"
+                            :inner-stroke-color="innerStroke" >
                             <p><strong>{{ c_steps }}%</strong></p>
                         </radial-progress-bar>
                     </div>
@@ -91,7 +92,8 @@ export default {
     data () {
         return {
             startColor: '#4286f4',
-            stopColor: '#4286f4'
+            stopColor: '#4286f4',
+            innerStroke: '#e8ecf2'
         }
     },
     components: {
@@ -136,17 +138,17 @@ export default {
 <<style scoped>
 
 .my-card.mdl-card {
-            width: 360px;
-            min-width: 360px;
-            max-width: 360px;
+            width: 310px;
+            min-width: 310px;
+            max-width: 310px;
 }
 
 .mdl-grid {
 	margin-top: 2px;    
 }
 .mdl-cell {
-    width:145px;
-    min-width: 145px;
+    width:95px;
+    min-width: 95px;
 }
 .mdl-card__media > img {
 	max-width: 100%;
